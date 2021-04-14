@@ -1,7 +1,5 @@
 "use strict!"
 
-const { post } = require("../../../../app");
-
 const id = document.querySelector("#id"),
     password = document.querySelector("#password"),
     loginBtn = document.querySelector("button");
@@ -20,7 +18,10 @@ loginBtn.addEventListener("click", function() {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(req),
-    });
+    }).then((res) => res.json())
+        .then((res) => {
+
+        })
 });
 
 // function login() {
