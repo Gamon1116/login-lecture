@@ -20,8 +20,15 @@ loginBtn.addEventListener("click", function() {
         body: JSON.stringify(req),
     }).then((res) => res.json())
         .then((res) => {
-
+            if (res.success) {
+                location.href = "/";    //로그인에 성공하면 / <<기본경로로이동
+            }else{
+                alert(res.msg); //실패메세지 alert로띄움
+            }
         })
+        .catch((err) => {
+            console.error("로그인 중 에러가 발생하였습니다.");
+        });
 });
 
 // function login() {
