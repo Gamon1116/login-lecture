@@ -1,16 +1,28 @@
 "use strict!"
 
 const id = document.querySelector("#id"),
+    name = document.querySelector("#name"),
     password = document.querySelector("#password"),
-    loginBtn = document.querySelector("#button");
+    confirmPassword = document.querySelector("#confirm-password"),
+    registerBtn = document.querySelector("#button");
 
-loginBtn.addEventListener("click", function() {
-    const req = {
-        id: id.value,
-        password: password.value,
+registerBtn.addEventListener("click", function () {
+
+    if (!id.value) {
+        return alert("아이디를 입력해주세요.")
+    }
+    if (password.value !== confirmPassword) {
+        return alert("비밀번호가 틀렸습니다.");
     }
 
-    fetch("/login", {
+    const req = {
+        id: id.value,
+        name: name.value,
+        password: password.value,
+
+    };
+
+    fetch("/register", {
         //json으로감싸서 stringify으로 문자열로 바꿈 ""안으로 들어감
         method: "POST",
         headers: {
@@ -21,18 +33,19 @@ loginBtn.addEventListener("click", function() {
     }).then((res) => res.json())
         .then((res) => {
             if (res.success) {
-                location.href = "/";    //로그인에 성공하면 / <<기본경로로이동
-            }else{
+                location.href = "/login";    //회원가입에 성공하면 로그인페이지로 이동
+            } else {
                 alert(res.msg); //실패메세지 alert로띄움
             }
-            
+
         })
         .catch((err) => {
-            console.error("로그인 중 에러가 발생하였습니다.");
+            console.error("회원가입 중 에러가 발생하였습니다.");
         });
-});
 
-// function login() {
+
+});
+// function register() {
 //     const req = {
 //         id: id.value,
 //         password: password.value,

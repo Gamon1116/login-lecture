@@ -23,6 +23,11 @@ const process = {
         const response = user.login();
         return res.json(response);
     },
+    register: (req, res) => {
+        const user = new User(req.body);
+        const response = user.register();
+        return res.json(response);
+    }
 };
 
 //모듈내보내는 명령어
