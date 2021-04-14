@@ -8,6 +8,7 @@ const ctrl = require("./home.ctrl")
 //routers/home/home.ctrl.js안에 output 변수안의 home함수
 router.get("/", ctrl.output.home);
 router.get("/login", ctrl.output.login);
+router.get("/register", ctrl.output.register);
 
 router.post("/login", ctrl.process.login);
 
