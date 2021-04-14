@@ -19,6 +19,22 @@ class UserStorage {
         
         return newUsers;
     }
+
+    static getUserInfo( id ) {
+        const users = this.#users; //users를 받아옴
+        const idx = users.id.indexOf(id);
+        //user의 key값들만 list로 만듦  =>[id, password, name] 이런 배열이 만들어짐
+        const usersKeys = Object.keys(users);
+        //userskeys를 reduce로돌려 초기값으로 아래  {}오브젝트를 넣어주면 newUser에 키값[info]이 순차적으로 들어감
+        //처음 id 가 들어가고 
+        const userInfo = usersKeys.reduce((newUser, info) => { 
+            //users 의 [key]값 [인덱스값] login()의 UserStorage.getUserInfo("여기값")
+            //을 구해서 newUser[info]에 넣음
+            newUser[info] = users[info][idx];
+            return newUser;
+        }, {});
+        return userInfo;
+    }
 };
 
 module.exports = UserStorage;
