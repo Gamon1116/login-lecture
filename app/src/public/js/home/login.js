@@ -25,6 +25,7 @@ loginBtn.addEventListener("click", function() {
             }else{
                 alert(res.msg); //실패메세지 alert로띄움
             }
+            
         })
         .catch((err) => {
             console.error("로그인 중 에러가 발생하였습니다.");
