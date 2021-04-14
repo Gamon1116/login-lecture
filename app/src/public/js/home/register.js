@@ -6,14 +6,13 @@ const id = document.querySelector("#id"),
     confirmPassword = document.querySelector("#confirm-password"),
     registerBtn = document.querySelector("#button");
 
-registerBtn.addEventListener("click", function () {
+registerBtn.addEventListener("click", register);
 
-    if (!id.value) {
-        return alert("아이디를 입력해주세요.")
-    }
-    if (password.value !== confirmPassword) {
-        return alert("비밀번호가 틀렸습니다.");
-    }
+function register() {
+
+    if (!id.value) return alert("아이디를 입력해주세요.");
+
+    if (password.value !== confirmPassword) return alert("비밀번호가 틀렸습니다");
 
     const req = {
         id: id.value,
@@ -42,9 +41,7 @@ registerBtn.addEventListener("click", function () {
         .catch((err) => {
             console.error("회원가입 중 에러가 발생하였습니다.");
         });
-
-
-});
+};
 // function register() {
 //     const req = {
 //         id: id.value,
