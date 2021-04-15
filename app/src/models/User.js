@@ -6,10 +6,10 @@ class User {
     constructor(body) {
         this.body = body;
     }
-    login() {
+    async login() {
         const cliend = this.body;
         //body.id값을 UserStorage에 메소드로 전달 받아올때는 id와 password만받아옴
-        const { id, password } = UserStorage.getUserInfo(cliend.id);
+        const { id, password } = await UserStorage.getUserInfo(cliend.id);
 
             //id가 존재하면
         if (id) {
