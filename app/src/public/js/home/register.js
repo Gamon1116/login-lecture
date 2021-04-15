@@ -12,7 +12,7 @@ function register() {
 
     if (!id.value) return alert("아이디를 입력해주세요.");
 
-    if (password.value !== confirmPassword) return alert("비밀번호가 틀렸습니다");
+    if (password.value !== confirmPassword.value) return alert("비밀번호가 틀렸습니다");
 
     const req = {
         id: id.value,
