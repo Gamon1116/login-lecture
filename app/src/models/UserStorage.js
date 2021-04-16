@@ -1,74 +1,43 @@
 "use strict";
 
-const fs = require("fs").promises;
+const db = require("../config/db")
 
-class UserStorage {
-
-    static #getUserInfo(data, id) {
-        const users = JSON.parse(data);
-        const idx = users.id.indexOf(id);
-        //user의 key값들만 list로 만듦  =>[id, password, name] 이런 배열이 만들어짐
-        const usersKeys = Object.keys(users);
-        //userskeys를 reduce로돌려 초기값으로 아래  {}오브젝트를 넣어주면 newUser에 키값[info]이 순차적으로 들어감
-        //처음 id 가 들어가고 
-        const userInfo = usersKeys.reduce((newUser, info) => {
-            //users 의 [key]값 [인덱스값] login()의 UserStorage.getUserInfo("여기값")
-            //을 구해서 newUser[info]에 넣음
-            newUser[info] = users[info][idx];
-            return newUser;
-        }, {});
-        return userInfo;
-    }
-
-    static #getUsers(data, isAll, fields) {
-        const users = JSON.parse(data);
-        if (isAll) return users;
-        //fields 에 대한 원소가 하나씩 출력이된다 fields.reduce의 첫번째 파라미터에 id가 두번째에 password가
-        const newUsers = fields.reduce((newUsers, field) => {
-            if (users.hasOwnProperty(field)) {
-                newUsers[field] = users[field];
-            }
-            return newUsers;
-        }, {});
-
-        return newUsers;
-    }
-
-    static getUsers(isAll, ...fields) {
-        return fs
-            .readFile("./src/databases/users.json")
-            .then((data) => {       //위로직이 성공했을때 실행
-                return this.#getUsers(data, isAll, fields);
-            })
-            .catch(console.error);   //위로직이 실패했을때 실행
-
-
-    }
+class UserStorage { 
 
     static getUserInfo(id) {
-        return fs
-            .readFile("./src/databases/users.json")
-            .then((data) => {       //위로직이 성공했을때 실행
-                return this.#getUserInfo(data, id);
-            })
-            .catch(console.error);   //위로직이 실패했을때 실행
-    }
+        //mysql 은 promise를 지원하지않으므로 직접만듦
+        //Promise 안에 있는 구문이 성공하게되면 resolve를 실행시키고 실패하게되면 reject를실행시킨다
+        return new Promise((resolve, reject) => {
+            const query = "SELECT * FROM users WHERE id = ?;";
+            // 첫번째 파라미터로 에러가 날아오고 두번째로 데이터가 날아옴
+            //쿼리문에 id = ? 과 첫번째 파라미터 [id]는 보안상의 이유로 작성되는 코드로 ?위치로 [id]가 들어가게됨
+            db.query(query, [id] , (err, data) => {
+                //실패시 에러던짐
+                if (err) reject(`${err}`);
+                //그렇지 않으면 resolve
+                resolve(data[0]);
+            });
+        });
+    };
 
 
     static async save(userInfo) {
-        const users = await this.getUsers(true);  //데이터를 오브젝트형태로 반환해서 users에 넣음
-        //userInfo.id(클라이언트가 입력한 유저 id)가 users.id에 includes(포함)되어있으면 Error로 return
-        if (users.id.includes(userInfo.id)) {
-            throw "이미 존재하는 아이디입니다.";
-        }
-        //userInfo로 각항목을 입력받아 users의 각항목에 push
-        users.id.push(userInfo.id);
-        users.name.push(userInfo.name);
-        users.password.push(userInfo.password);
-        //파일에 데이터를 쓰기 위해서는 fs(파일 시스템)의 writeFile함수사용 첫번째 파라미터로는 경로, 두번째로는 저장할 data
-        //위에 푸쉬된 테이블(users)를 JSON에 stringify로 변환해저장
-        fs.writeFile("./src/databases/users.json", JSON.stringify(users));
-        return { success: true };
+        return new Promise((resolve, reject) => {
+            //위 로그인과 다르게 insert 쿼리문으로 저장으로 바꿔주고 value에 ?는 위 주석의 [id]와 같음
+            const query = "INSERT INTO users(id, name, password) VALUES(?, ?, ?);";
+           //첫번째 파라미터로 쿼리문을 던지고 두번째로 쿼리문안에 대입될 변수를 넣어줌 세번째로 에러를 받음
+            db.query(
+                query, 
+                [userInfo.id, userInfo.name, userInfo.password], 
+                //회원가입이기 때문에 data를 받을게 없기 때문에 위와는 다르게 data가 빠져도 상관없음
+                (err) => {
+                //실패시 에러던짐 그냥 if (err) reject(err);로 하면 err가 object객체 이므로 문자열로 변환하여 던짐
+                //실제 개발시에는 이렇게 하면안됨;
+                if (err) reject(`${err}`);
+                //그렇지 않으면 resolve({ success: ture }) 를 던짐
+                resolve({ success: true });
+            });
+        });
     }
 }
 
