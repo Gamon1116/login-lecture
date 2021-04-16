@@ -34,6 +34,7 @@ function register() {
             if (res.success) {
                 location.href = "/login";    //회원가입에 성공하면 로그인페이지로 이동
             } else {
+                if (res.err) return alert(res.err);
                 alert(res.msg); //실패메세지 alert로띄움
             }
 

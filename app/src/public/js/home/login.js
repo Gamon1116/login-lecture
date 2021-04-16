@@ -5,6 +5,11 @@ const id = document.querySelector("#id"),
     loginBtn = document.querySelector("#button");
 
 loginBtn.addEventListener("click", function() {
+    
+    if (!id.value) return alert("아이디를 입력해주세요.");
+//  password가 없으면
+    if (!password.value) return alert("비밀번호를 입력해주십시오.");
+    
     const req = {
         id: id.value,
         password: password.value,
@@ -23,6 +28,7 @@ loginBtn.addEventListener("click", function() {
             if (res.success) {
                 location.href = "/";    //로그인에 성공하면 / <<기본경로로이동
             }else{
+                if (res.err) return alert(res.err);
                 alert(res.msg); //실패메세지 alert로띄움
             }
             
@@ -30,6 +36,7 @@ loginBtn.addEventListener("click", function() {
         .catch((err) => {
             console.error("로그인 중 에러가 발생하였습니다.");
         });
+    
 });
 
 // function login() {

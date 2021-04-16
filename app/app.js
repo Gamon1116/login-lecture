@@ -22,6 +22,7 @@ app.use(express.json());//bodypaser 가 json데이터를 파싱해올수있음
 app.use(express.urlencoded({ extended: false }));
 
 
+
 app.use("/", home);      //use -> 미들웨어를 등록해주는 메소드
 
 module.exports = app;
